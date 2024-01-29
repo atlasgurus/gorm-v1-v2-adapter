@@ -47,68 +47,116 @@ type Scope struct {
 
 func (w *DB) Create(value interface{}) *DB {
 	result := w.GormDB.Create(value)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Save(value interface{}) *DB {
 	result := w.GormDB.Save(value)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Delete(value interface{}, where ...interface{}) *DB {
 	result := w.GormDB.Delete(value, where...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Updates(values interface{}) *DB {
 	result := w.GormDB.Updates(values)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) First(out interface{}, where ...interface{}) *DB {
 	result := w.GormDB.First(out, where...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Take(out interface{}, where ...interface{}) *DB {
 	result := w.GormDB.Take(out, where...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Last(out interface{}, where ...interface{}) *DB {
 	result := w.GormDB.Last(out, where...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Find(out interface{}, where ...interface{}) *DB {
 	result := w.GormDB.Find(out, where...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Update(column string, value interface{}) *DB {
 	result := w.GormDB.Update(column, value)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) UpdateColumns(values interface{}) *DB {
 	result := w.GormDB.UpdateColumns(values)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Model(value interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Model(value), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Model(value)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Where(query interface{}, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Where(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Where(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Or(query interface{}, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Or(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Or(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Not(query interface{}, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Not(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Not(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Limit(limit interface{}) *DB {
+    limitInt, err := ConvertToInt(limit)
+    if err != nil {
+        return &DB{GormDB: w.GormDB, Error: err, RowsAffected: w.RowsAffected}
+    }
+    result := w.GormDB.Limit(limitInt)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Offset(offset interface{}) *DB {
+    offsetInt, err := ConvertToInt(offset)
+    if err != nil {
+        return &DB{GormDB: w.GormDB, Error: err, RowsAffected: w.RowsAffected}
+    }
+    result := w.GormDB.Offset(offsetInt)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Order(value interface{}) *DB {
+    result := w.GormDB.Order(value)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Select(query interface{}, args ...interface{}) *DB {
+    result := w.GormDB.Select(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Scopes(funcs ...func(*DB) *DB) *DB {
+    modifiedFuncs := make([]func(*gormV2.DB) *gormV2.DB, len(funcs))
+    for i, f := range funcs {
+        modifiedFuncs[i] = func(gdb *gormV2.DB) *gormV2.DB {
+            return f(&DB{GormDB: gdb}).GormDB
+        }
+    }
+    result := w.GormDB.Scopes(modifiedFuncs...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
+}
+
+func (w *DB) Preload(column string, conditions ...interface{}) *DB {
+    result := w.GormDB.Preload(column, conditions...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func ConvertToInt(value interface{}) (int, error) {
@@ -134,108 +182,66 @@ func ConvertToInt(value interface{}) (int, error) {
     }
 }
 
-
-func (w *DB) Limit(limit interface{}) *DB {
-	limitInt, err := ConvertToInt(limit)
-	if err != nil {
-		return &DB{GormDB: w.GormDB.Limit(limitInt), Error: err, RowsAffected: w.RowsAffected}
-	}
-	return &DB{GormDB: w.GormDB.Limit(limitInt), Error: w.Error, RowsAffected: w.RowsAffected}
-}
-
-func (w *DB) Offset(offset interface{}) *DB {
-	offsetInt, err := ConvertToInt(offset)
-	if err != nil {
-		return &DB{GormDB: w.GormDB.Offset(offsetInt), Error: err, RowsAffected: w.RowsAffected}
-	}
-	return &DB{GormDB: w.GormDB.Offset(offsetInt), Error: w.Error, RowsAffected: w.RowsAffected}
-}
-
-func (w *DB) Order(value interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Order(value), Error: w.Error, RowsAffected: w.RowsAffected}
-}
-
-func (w *DB) Select(query interface{}, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Select(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
-}
-
-func (w *DB) Scopes(funcs ...func(*DB) *DB) *DB {
-    modifiedFuncs := make([]func(*gormV2.DB) *gormV2.DB, len(funcs))
-
-    for i, f := range funcs {
-        // Create a closure that takes a *gormV2.DB and calls the function with the wrapped GormDB
-        modifiedFuncs[i] = func(gdb *gormV2.DB) *gormV2.DB {
-            return f(&DB{GormDB: gdb}).GormDB
-        }
-    }
-
-    modifiedGormDB := w.GormDB.Scopes(modifiedFuncs...)
-
-    return &DB{
-        GormDB:       modifiedGormDB,
-        Error:        w.Error,
-        RowsAffected: w.RowsAffected,
-        Committed:    w.Committed,
-    }
-}
-
-
-
-func (w *DB) Preload(column string, conditions ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Preload(column, conditions...), Error: w.Error, RowsAffected: w.RowsAffected}
-}
-
 func (w *DB) Raw(sql string, values ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Raw(sql, values...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Raw(sql, values...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Exec(sql string, values ...interface{}) *DB {
-	result := w.GormDB.Exec(sql, values...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
+    result := w.GormDB.Exec(sql, values...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Joins(query string, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Joins(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Joins(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Group(query string) *DB {
-	return &DB{GormDB: w.GormDB.Group(query), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Group(query)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Having(query string, args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Having(query, args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Having(query, args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Distinct(args ...interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Distinct(args...), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Distinct(args...)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Table(name string) *DB {
-	return &DB{GormDB: w.GormDB.Table(name), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Table(name)
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Debug() *DB {
-	return &DB{GormDB: w.GormDB.Debug(), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Debug()
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Begin() *DB {
-	return &DB{GormDB: w.GormDB.Begin(), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Begin()
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Commit() *DB {
-    tx := w.GormDB.Commit()
-    committed := tx.Error == nil // If there's no error, the transaction is considered committed.
-    return &DB{GormDB: tx, Error: tx.Error, Committed: committed}
+    result := w.GormDB.Commit()
+    committed := result.Error == nil
+    return &DB{GormDB: result, Error: result.Error, Committed: committed, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Rollback() *DB {
-	return &DB{GormDB: w.GormDB.Rollback(), Error: w.Error, RowsAffected: w.RowsAffected}
+    result := w.GormDB.Rollback()
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: w.RowsAffected}
 }
 
 func (w *DB) Transaction(fc func(tx *DB) error) (err error) {
-	return w.GormDB.Transaction(func(tx *gormV2.DB) error {
-		return fc(&DB{GormDB: tx})
-	})
+    return w.GormDB.Transaction(func(tx *gormV2.DB) error {
+        return fc(&DB{GormDB: tx})
+    })
 }
 
 type Association struct {
@@ -264,7 +270,8 @@ func (w *DB) AutoMigrate(dst ...interface{}) *DB {
 }
 
 func (w *DB) Unscoped() *DB {
-	return &DB{GormDB: w.GormDB.Unscoped(), Error: w.Error, RowsAffected: w.RowsAffected}
+	result := w.GormDB.Unscoped()
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Count(value interface{}) *DB {
@@ -354,12 +361,6 @@ func (w *DB) RenameColumn(oldName string, newName string) *DB {
 	return &DB{GormDB: w.GormDB, Error: result, RowsAffected: w.RowsAffected}
 }
 
-func (w *DB) RawSQL(sql string, values ...interface{}) *DB {
-	// Note: RawSQL is not a direct GORM v1 method, but added here for executing raw SQL commands
-	result := w.GormDB.Raw(sql, values...)
-	return &DB{GormDB: w.GormDB, Error: result.Error, RowsAffected: result.RowsAffected}
-}
-
 // Deprecated: SingularTable is deprecated and will be removed in a future version.
 func (w *DB) SingularTable(enable bool) {
 	// In GORM v2, this setting is done at the GORM DB engine level, not on the DB instance.
@@ -367,7 +368,8 @@ func (w *DB) SingularTable(enable bool) {
 }
 
 func (w *DB) Set(key string, value interface{}) *DB {
-	return &DB{GormDB: w.GormDB.Set(key, value), Error: w.Error, RowsAffected: w.RowsAffected}
+	result := w.GormDB.Set(key, value)
+	return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) Get(key string) (interface{}, bool) {
@@ -671,7 +673,7 @@ func (w *DB) FirstOrCreate(dest interface{}, conds ...interface{}) *DB {
 
 func (w *DB) Assign(attrs ...interface{}) *DB {
     result := w.GormDB.Assign(attrs...)
-    return &DB{GormDB: result, Error: w.Error, RowsAffected: w.RowsAffected}
+    return &DB{GormDB: result, Error: result.Error, RowsAffected: result.RowsAffected}
 }
 
 func (w *DB) BeginTx(ctx context.Context, opts *sql.TxOptions) *DB {
@@ -754,9 +756,9 @@ func (w *DB) Omit(columns ...string) *DB {
     // Return a new instance of your DB struct with the updated GormDB
     return &DB{
         GormDB:       newDB,
-        Error:        w.Error,
-        RowsAffected: w.RowsAffected,
-        Committed:    w.Committed,
+        Error:        newDB.Error,
+        RowsAffected: newDB.RowsAffected,
+        Committed:    false,
     }
 }
 
