@@ -1,6 +1,7 @@
 package gorm_test
 
 import (
+    "fmt"
     "github.com/atlasgurus/gorm-v1-v2-adapter/gorm"
     "testing"
 )
@@ -329,4 +330,62 @@ func TestRawSQL(t *testing.T) {
 
 
 
-// Additional test cases for other methods like Update, Delete, etc.
+func TestScanRows(t *testing.T) {
+    db := setupTestDB(t)
+    defer db.GormDB.Exec("DROP TABLE test_models;")
+
+    // Create sample records
+    for i := 0; i < 5; i++ {
+        db.Create(&TestModel{Name: fmt.Sprintf("Test %d", i)})
+    }
+
+    // Perform raw SQL query
+    rows, err := db.Raw("SELECT * FROM test_models").Rows()
+    if err != nil {
+        t.Fatalf("Failed to execute raw query: %v", err)
+    }
+    defer rows.Close()
+
+    var models []TestModel
+    for rows.Next() {
+        var model TestModel
+        if err := db.ScanRows(rows, &model); err != nil {
+            t.Errorf("Failed to scan row: %v", err)
+        }
+        models = append(models, model)
+    }
+
+    if len(models) != 5 {
+        t.Errorf("Expected 5 models, got %d", len(models))
+    }
+}
+
+func TestScanRowsA(t *testing.T) {
+    db := setupTestDB(t)
+    defer db.GormDB.Exec("DROP TABLE test_models;")
+
+    // Create sample records
+    for i := 0; i < 5; i++ {
+        db.Create(&TestModel{Name: fmt.Sprintf("Test %d", i)})
+    }
+
+    // Perform raw SQL query
+    rows, err := db.Raw("SELECT * FROM test_models").Rows()
+    if err != nil {
+        t.Fatalf("Failed to execute raw query: %v", err)
+    }
+    defer rows.Close()
+
+    var models []TestModel // Use a slice of TestModel
+    for rows.Next() {
+        var model TestModel
+        if err := db.ScanRows(rows, &model); err != nil {
+            t.Errorf("Failed to scan row: %v", err)
+        }
+        models = append(models, model)
+    }
+
+    if len(models) != 5 {
+        t.Errorf("Expected 5 models, got %d", len(models))
+    }
+}
